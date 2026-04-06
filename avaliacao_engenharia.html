@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação de Integração — Engenharia de Obras</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f5f7;min-height:100vh;padding:32px 16px;color:#172b4d}
+  .container{max-width:960px;margin:0 auto}
+  .page-header{margin-bottom:28px}
+  .page-header h1{font-size:22px;font-weight:600;color:#172b4d;margin-bottom:4px}
+  .page-header p{font-size:14px;color:#6b778c}
+  .dept-banner{background:linear-gradient(135deg,#0C447C,#185FA5);border-radius:12px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .dept-banner h2{font-size:18px;font-weight:600;color:#fff}
+  .dept-banner p{font-size:13px;color:rgba(255,255,255,.8);margin-top:2px}
+  .dept-progress{text-align:right}
+  .dept-pct{font-size:28px;font-weight:700;color:#fff}
+  .dept-pct-label{font-size:12px;color:rgba(255,255,255,.7)}
+  .dept-bar{height:6px;background:rgba(255,255,255,.25);border-radius:3px;margin-top:6px;min-width:160px}
+  .dept-bar-fill{height:6px;background:#fff;border-radius:3px;transition:width .5s}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-bottom:32px}
+  .card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);cursor:pointer;transition:transform .15s,box-shadow .15s;border:1px solid #dfe1e6}
+  .card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+  .card-thumb{height:120px;display:flex;align-items:center;justify-content:center;position:relative;padding:14px;text-align:center;font-size:14px;font-weight:600;color:#fff;line-height:1.4}
+  .card-pct-badge{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px}
+  .card-bar{height:4px;background:#f4f5f7}
+  .card-bar-fill{height:4px;transition:width .4s}
+  .card-body{padding:14px}
+  .card-title{font-size:13px;font-weight:600;color:#172b4d;margin-bottom:6px;line-height:1.4}
+  .card-meta{font-size:11px;color:#97a0af;display:flex;gap:10px;margin-bottom:10px}
+  .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+  .badge-obrig{background:#FFEBE6;color:#BF2600}
+  .badge-desej{background:#FFFAE6;color:#974F0C}
+  .badge-ok{background:#E3FCEF;color:#006644}
+  .card-btn{display:block;width:100%;margin-top:10px;padding:8px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;color:#fff}
+  .card-btn:hover{opacity:.88}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(9,30,66,.54);z-index:100;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+  .modal-overlay.open{display:flex}
+  .modal{background:#fff;border-radius:14px;width:100%;max-width:540px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+  .modal-head{padding:18px 22px 14px;border-bottom:1px solid #dfe1e6;display:flex;justify-content:space-between;align-items:center}
+  .modal-head h2{font-size:15px;font-weight:600;color:#172b4d}
+  .close-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#97a0af;line-height:1;padding:0 4px}
+  .close-btn:hover{color:#172b4d}
+  .modal-body{padding:22px}
+  .q-progress{margin-bottom:18px}
+  .q-progress-labels{display:flex;justify-content:space-between;font-size:11px;color:#97a0af;margin-bottom:6px}
+  .q-progress-track{height:5px;background:#f4f5f7;border-radius:3px}
+  .q-progress-fill{height:5px;background:#0052CC;border-radius:3px;transition:width .3s}
+  .q-num{font-size:11px;font-weight:600;color:#97a0af;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+  .q-text{font-size:15px;font-weight:600;color:#172b4d;margin-bottom:18px;line-height:1.5}
+  .option{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;border:2px solid #dfe1e6;margin-bottom:8px;cursor:pointer;transition:all .12s;font-size:13px;color:#172b4d;user-select:none}
+  .option:hover{border-color:#4C9AFF;background:#f4f9ff}
+  .option.selected{border-color:#0052CC;background:#DEEBFF;color:#0052CC}
+  .option.correct{border-color:#00875A;background:#E3FCEF;color:#006644;cursor:default}
+  .option.wrong{border-color:#DE350B;background:#FFEBE6;color:#BF2600;cursor:default}
+  .option.disabled{cursor:default}
+  .option-circle{width:20px;height:20px;border-radius:50%;border:2px solid currentColor;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+  .feedback{padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;margin-top:4px;margin-bottom:4px}
+  .feedback.ok{background:#E3FCEF;color:#006644;border-left:3px solid #00875A}
+  .feedback.err{background:#FFEBE6;color:#BF2600;border-left:3px solid #DE350B}
+  .modal-foot{padding:14px 22px;border-top:1px solid #dfe1e6;display:flex;justify-content:space-between;align-items:center}
+  .modal-foot-info{font-size:12px;color:#97a0af}
+  .btn-primary{padding:9px 22px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:#0052CC;color:#fff;transition:background .15s}
+  .btn-primary:hover{background:#0065FF}
+  .btn-primary:disabled{background:#dfe1e6;color:#97a0af;cursor:not-allowed}
+  .btn-secondary{padding:9px 18px;border-radius:8px;border:2px solid #dfe1e6;font-size:13px;font-weight:600;cursor:pointer;background:#fff;color:#172b4d;transition:all .15s}
+  .btn-secondary:hover{border-color:#97a0af}
+
+  /* RESULT */
+  .result-box{text-align:center;padding:24px 16px 8px}
+  .result-emoji{font-size:48px;margin-bottom:12px}
+  .result-score{font-size:48px;font-weight:700;margin-bottom:4px}
+  .result-label{font-size:14px;color:#6b778c;margin-bottom:20px}
+  .result-bar-wrap{background:#f4f5f7;border-radius:8px;padding:16px;margin-bottom:16px;text-align:left}
+  .result-bar-label{font-size:12px;color:#6b778c;margin-bottom:6px;display:flex;justify-content:space-between}
+  .result-bar-track{height:8px;background:#dfe1e6;border-radius:4px}
+  .result-bar-fill{height:8px;border-radius:4px;transition:width .6s}
+  .result-msg{font-size:14px;color:#172b4d;background:#f4f5f7;border-radius:8px;padding:12px 16px}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Avaliação de Integração</h1>
+    <p>Conclua todos os módulos obrigatórios para finalizar seu processo de integração.</p>
+  </div>
+
+  <div class="dept-banner">
+    <div>
+      <h2>Engenharia de Obras</h2>
+      <p>4 módulos · 3 obrigatórios · 1 desejável</p>
+    </div>
+    <div class="dept-progress">
+      <div class="dept-pct" id="dept-pct">0%</div>
+      <div class="dept-pct-label">progresso geral</div>
+      <div class="dept-bar"><div class="dept-bar-fill" id="dept-bar-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const MODULES = [
+  {
+    id:'m1', title:'Cultura e história da empresa',
+    time:'00h 30min', required:true,
+    color:'#0C447C',
+    questions:[
+      {q:'Qual é a principal atividade da empresa?',
+       opts:['Incorporação imobiliária','Construção e engenharia de obras','Consultoria financeira','Licitações públicas'],ans:1},
+      {q:'O que significa QSMS no contexto da engenharia de obras?',
+       opts:['Qualidade, Segurança, Meio Ambiente e Saúde','Qualidade, Sistema, Manutenção e Serviço','Quantidade, Segurança, Material e Serviço','Qualidade, Suprimento, Medição e Saúde'],ans:0},
+      {q:'Qual documento registra as ocorrências diárias de uma obra?',
+       opts:['Boletim de medição','Curva S','Diário de obra','Ata de reunião'],ans:2},
+      {q:'O fluxo de abertura de obra está descrito em qual procedimento?',
+       opts:['PROC-ENG-07','PROC-ENG-03','PROC-ENG-01','PROC-ENG-05'],ans:2},
+    ]
+  },
+  {
+    id:'m2', title:'Planejamento e acompanhamento',
+    time:'01h 00min', required:true,
+    color:'#185FA5',
+    questions:[
+      {q:'O que representa a Curva S em uma obra?',
+       opts:['Gráfico de temperatura do canteiro','Representação do avanço físico-financeiro ao longo do tempo','Diagrama de fluxo de caixa','Mapa de riscos da obra'],ans:1},
+      {q:'Qual FV é utilizado para registrar o avanço físico semanal?',
+       opts:['FV-ENG-01','FV-ENG-06','FV-ENG-04','FV-ENG-08'],ans:2},
+      {q:'Onde ficam arquivados os cronogramas aprovados por obra?',
+       opts:['2.2.3 Modelos e templates','2.2.4 Registros e arquivo','2.3.3 Arquivo por obra','2.4.4 Arquivo de orçamentos'],ans:1},
+      {q:'O PROC-ENG-05 se refere a qual procedimento?',
+       opts:['Abertura de obra','Controle de medições','Revisão e reprogramação de cronograma','Encerramento de obra'],ans:2},
+      {q:'Qual é o objetivo do boletim de medição?',
+       opts:['Registrar acidentes','Medir o avanço executado para fins de pagamento','Controlar o estoque de materiais','Registrar presença dos colaboradores'],ans:1},
+    ]
+  },
+  {
+    id:'m3', title:'Qualidade e segurança em obra',
+    time:'01h 00min', required:true,
+    color:'#0F6E56',
+    questions:[
+      {q:'O que é um RNC?',
+       opts:['Relatório de Não Conformidade','Registro de Nova Contratação','Relatório de Negócio Concluído','Relação de Normas Construtivas'],ans:0},
+      {q:'Qual procedimento trata do controle de EPI em obra?',
+       opts:['PROC-ENG-17','PROC-ENG-19','PROC-ENG-21','PROC-ENG-24'],ans:2},
+      {q:'As NBRs aplicáveis ficam arquivadas em qual subpasta?',
+       opts:['2.4 Orçamentos e custos','2.5.3 Normas e referências técnicas','2.3 Projetos e obras','2.2 Planejamento'],ans:1},
+      {q:'Qual FV é usado para registrar a inspeção de um serviço executado?',
+       opts:['FV-ENG-18','FV-ENG-19','FV-ENG-20','FV-ENG-22'],ans:1},
+    ]
+  },
+  {
+    id:'m4', title:'Sistemas, ferramentas e suprimentos',
+    time:'00h 45min', required:false,
+    color:'#854F0B',
+    questions:[
+      {q:'Qual ferramenta é indicada para elaboração do cronograma mestre?',
+       opts:['AutoCAD','Revit','MS Project / Excel','SAP'],ans:2},
+      {q:'O que é o as built?',
+       opts:['Orçamento inicial da obra','Projeto atualizado conforme o que foi realmente construído','Relatório de inspeção final','Plano de segurança da obra'],ans:1},
+      {q:'Qual FV deve ser preenchido ao solicitar uma compra?',
+       opts:['FV-ENG-26','FV-ENG-25','FV-ENG-27','FV-ENG-28'],ans:1},
+      {q:'Onde ficam cadastrados os fornecedores homologados?',
+       opts:['2.4.3 Modelos e templates','2.6.3 Cadastro de fornecedores','2.3.3 Arquivo por obra','2.5.3 Normas técnicas'],ans:1},
+    ]
+  },
+];
+
+const progress = {};
+MODULES.forEach(m => { progress[m.id] = +(localStorage.getItem('eng_prog_'+m.id)||0); });
+
+let quizState = null;
+
+function totalProgress(){
+  return Math.round(MODULES.reduce((s,m)=>s+progress[m.id],0)/MODULES.length);
+}
+
+function save(id, pct){
+  progress[id] = pct;
+  try{ localStorage.setItem('eng_prog_'+id, pct); }catch(e){}
+  updateBanner();
+  renderGrid();
+}
+
+function updateBanner(){
+  const p = totalProgress();
+  document.getElementById('dept-pct').textContent = p+'%';
+  document.getElementById('dept-bar-fill').style.width = p+'%';
+}
+
+function renderGrid(){
+  document.getElementById('grid').innerHTML = MODULES.map(m => {
+    const pct = progress[m.id];
+    const done = pct === 100;
+    const barColor = done ? '#00875A' : m.color;
+    return `
+    <div class="card" onclick="openQuiz('${m.id}')">
+      <div class="card-thumb" style="background:${m.color}">
+        ${m.title}
+        ${pct > 0 ? `<span class="card-pct-badge">${pct}%</span>` : ''}
+      </div>
+      <div class="card-bar"><div class="card-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+      <div class="card-body">
+        <div class="card-title">${m.title}</div>
+        <div class="card-meta">
+          <span>⏱ ${m.time}</span>
+          <span>📝 ${m.questions.length} questões</span>
+        </div>
+        <span class="badge ${done ? 'badge-ok' : m.required ? 'badge-obrig' : 'badge-desej'}">
+          ${done ? '✓ Concluído' : m.required ? '● Obrigatório' : '○ Desejável'}
+        </span>
+        <button class="card-btn" style="background:${m.color}">${done ? 'Refazer' : 'Iniciar avaliação'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openQuiz(id){
+  const mod = MODULES.find(m=>m.id===id);
+  if(!mod) return;
+  quizState = {mod, current:0, answers:Array(mod.questions.length).fill(undefined), answered:false};
+  renderQuiz();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  quizState = null;
+}
+
+document.getElementById('modal-overlay').addEventListener('click', e=>{
+  if(e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+function renderQuiz(){
+  const {mod, current, answers, answered} = quizState;
+  const q = mod.questions[current];
+  const total = mod.questions.length;
+  const isLast = current === total-1;
+  const pct = Math.round(((current+1)/total)*100);
+  const selected = answers[current];
+
+  const opts = q.opts.map((o,i)=>{
+    let cls = 'option';
+    let circle = String.fromCharCode(65+i);
+    if(answered){
+      cls += ' disabled';
+      if(i===q.ans) cls+=' correct';
+      else if(selected===i) cls+=' wrong';
+    } else {
+      if(selected===i) cls+=' selected';
+    }
+    return `<div class="${cls}" onclick="selectOpt(${i})">
+      <span class="option-circle">${circle}</span>${o}
+    </div>`;
+  }).join('');
+
+  const feedback = answered
+    ? `<div class="feedback ${answers[current]===q.ans?'ok':'err'}">
+        ${answers[current]===q.ans ? '✓ Correto!' : '✗ Incorreto. A resposta certa é: <strong>'+q.opts[q.ans]+'</strong>'}
+       </div>` : '';
+
+  document.getElementById('modal').innerHTML = `
+    <div class="modal-head">
+      <h2>${mod.title}</h2>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="q-progress">
+        <div class="q-progress-labels"><span>Progresso</span><span>${current+1} / ${total}</span></div>
+        <div class="q-progress-track"><div class="q-progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="q-num">Pergunta ${current+1} de ${total}</div>
+      <div class="q-text">${q.q}</div>
+      ${opts}
+      ${feedback}
+    </div>
+    <div class="modal-foot">
+      <span class="modal-foot-info">${mod.required?'Módulo obrigatório':'Módulo desejável'}</span>
+      ${answered
+        ? `<button class="btn-primary" onclick="${isLast?'showResult()':'nextQuestion()'}">${isLast?'Ver resultado →':'Próxima →'}</button>`
+        : `<button class="btn-primary" ${selected===undefined?'disabled':''} onclick="confirmAnswer()">Confirmar</button>`
+      }
+    </div>`;
+}
+
+function selectOpt(i){
+  if(quizState.answered) return;
+  quizState.answers[quizState.current] = i;
+  renderQuiz();
+}
+
+function confirmAnswer(){
+  if(quizState.answers[quizState.current]===undefined) return;
+  quizState.answered = true;
+  renderQuiz();
+}
+
+function nextQuestion(){
+  quizState.current++;
+  quizState.answered = false;
+  renderQuiz();
+}
+
+function showResult(){
+  const {mod, answers} = quizState;
+  const correct = answers.filter((a,i)=>a===mod.questions[i].ans).length;
+  const total = mod.questions.length;
+  const pct = Math.round((correct/total)*100);
+  save(mod.id, pct);
+
+  const color = pct===100?'#00875A':pct>=70?'#0052CC':pct>=40?'#FF991F':'#DE350B';
+  const emoji = pct===100?'🏆':pct>=70?'👍':pct>=40?'📚':'🔄';
+  const msg = pct===100?'Excelente! Módulo concluído com 100% de aproveitamento.'
+    :pct>=70?'Bom desempenho! Módulo registrado. Você pode revisar o material para fixar melhor.'
+    :'Recomendamos revisar o material e tentar novamente para garantir o aprendizado.';
+
+  document.getElementById('modal').innerHTML = `
+    <div class="modal-head">
+      <h2>Resultado — ${mod.title}</h2>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="result-box">
+        <div class="result-emoji">${emoji}</div>
+        <div class="result-score" style="color:${color}">${pct}%</div>
+        <div class="result-label">${correct} de ${total} respostas corretas</div>
+        <div class="result-bar-wrap">
+          <div class="result-bar-label"><span>Aproveitamento</span><span>${pct}%</span></div>
+          <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+        </div>
+        <div class="result-msg">${msg}</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="openQuiz('${mod.id}')">Refazer</button>
+      <button class="btn-primary" onclick="closeModal()">Fechar</button>
+    </div>`;
+}
+
+updateBanner();
+renderGrid();
+</script>
+</body>
+</html>
