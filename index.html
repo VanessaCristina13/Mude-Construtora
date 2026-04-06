@@ -184,65 +184,16 @@ if(collabName){
 
 const MODULES = [
   {
-    id:'m1', title:'Cultura e história da empresa',
-    time:'00h 30min', required:true,
+    id:'m1', title:'Trilha de Integração — Engenharia',
+    time:'00h 15min', required:true,
     color:'#0C447C',
     questions:[
-      {q:'Qual é a principal atividade da empresa?',
-       opts:['Incorporação imobiliária','Construção e engenharia de obras','Consultoria financeira','Licitações públicas'],ans:1},
-      {q:'O que significa QSMS no contexto da engenharia de obras?',
-       opts:['Qualidade, Segurança, Meio Ambiente e Saúde','Qualidade, Sistema, Manutenção e Serviço','Quantidade, Segurança, Material e Serviço','Qualidade, Suprimento, Medição e Saúde'],ans:0},
-      {q:'Qual documento registra as ocorrências diárias de uma obra?',
-       opts:['Boletim de medição','Curva S','Diário de obra','Ata de reunião'],ans:2},
-      {q:'O fluxo de abertura de obra está descrito em qual procedimento?',
-       opts:['PROC-ENG-07','PROC-ENG-03','PROC-ENG-01','PROC-ENG-05'],ans:2},
-    ]
-  },
-  {
-    id:'m2', title:'Planejamento e acompanhamento',
-    time:'01h 00min', required:true,
-    color:'#185FA5',
-    questions:[
-      {q:'O que representa a Curva S em uma obra?',
-       opts:['Gráfico de temperatura do canteiro','Representação do avanço físico-financeiro ao longo do tempo','Diagrama de fluxo de caixa','Mapa de riscos da obra'],ans:1},
-      {q:'Qual FV é utilizado para registrar o avanço físico semanal?',
-       opts:['FV-ENG-01','FV-ENG-06','FV-ENG-04','FV-ENG-08'],ans:2},
-      {q:'Onde ficam arquivados os cronogramas aprovados por obra?',
-       opts:['2.2.3 Modelos e templates','2.2.4 Registros e arquivo','2.3.3 Arquivo por obra','2.4.4 Arquivo de orçamentos'],ans:1},
-      {q:'O PROC-ENG-05 se refere a qual procedimento?',
-       opts:['Abertura de obra','Controle de medições','Revisão e reprogramação de cronograma','Encerramento de obra'],ans:2},
-      {q:'Qual é o objetivo do boletim de medição?',
-       opts:['Registrar acidentes','Medir o avanço executado para fins de pagamento','Controlar o estoque de materiais','Registrar presença dos colaboradores'],ans:1},
-    ]
-  },
-  {
-    id:'m3', title:'Qualidade e segurança em obra',
-    time:'01h 00min', required:true,
-    color:'#0F6E56',
-    questions:[
-      {q:'O que é um RNC?',
-       opts:['Relatório de Não Conformidade','Registro de Nova Contratação','Relatório de Negócio Concluído','Relação de Normas Construtivas'],ans:0},
-      {q:'Qual procedimento trata do controle de EPI em obra?',
-       opts:['PROC-ENG-17','PROC-ENG-19','PROC-ENG-21','PROC-ENG-24'],ans:2},
-      {q:'As NBRs aplicáveis ficam arquivadas em qual subpasta?',
-       opts:['2.4 Orçamentos e custos','2.5.3 Normas e referências técnicas','2.3 Projetos e obras','2.2 Planejamento'],ans:1},
-      {q:'Qual FV é usado para registrar a inspeção de um serviço executado?',
-       opts:['FV-ENG-18','FV-ENG-19','FV-ENG-20','FV-ENG-22'],ans:1},
-    ]
-  },
-  {
-    id:'m4', title:'Sistemas, ferramentas e suprimentos',
-    time:'00h 45min', required:false,
-    color:'#854F0B',
-    questions:[
-      {q:'Qual ferramenta é indicada para elaboração do cronograma mestre?',
-       opts:['AutoCAD','Revit','MS Project / Excel','SAP'],ans:2},
-      {q:'O que é o as built?',
-       opts:['Orçamento inicial da obra','Projeto atualizado conforme o que foi realmente construído','Relatório de inspeção final','Plano de segurança da obra'],ans:1},
-      {q:'Qual FV deve ser preenchido ao solicitar uma compra?',
-       opts:['FV-ENG-26','FV-ENG-25','FV-ENG-27','FV-ENG-28'],ans:1},
-      {q:'Onde ficam cadastrados os fornecedores homologados?',
-       opts:['2.4.3 Modelos e templates','2.6.3 Cadastro de fornecedores','2.3.3 Arquivo por obra','2.5.3 Normas técnicas'],ans:1},
+      {q:'Em qual módulo é feita a requisição de material?',
+       opts:['Compras','Contratos','Orçamentos','Financeiro'],ans:0},
+      {q:'Em qual módulo é realizado o planejamento da obra?',
+       opts:['Contratos','Financeiro','Orçamento','Gestão Operacional'],ans:2},
+      {q:'Qual é o caminho correto para realizar uma requisição por Integração no sistema?',
+       opts:['Gestão Operacional → Suprimentos → Requisição','Compras → Nova Requisição → Integração','Financeiro → Aprovações → Requisição','Orçamento → Materiais → Solicitar'],ans:0},
     ]
   },
 ];
