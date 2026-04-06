@@ -351,7 +351,7 @@ function checkAllComplete(){
       </div>
     </div>
     <div style="text-align:center;margin-bottom:20px">
-      <button class="btn-forms" style="max-width:360px;margin:0 auto" onclick="openForms(${totalScore})">Registrar conclusão no painel →</button>
+      <button class="btn-forms" style="max-width:360px;margin:0 auto" onclick="openForms(${totalScore})">Preencher formulário de conclusão →</button>
     </div>`;
   } else {
     area.innerHTML = '';
@@ -361,15 +361,7 @@ function checkAllComplete(){
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk1wW6rDW0azCZ_pBCJWkLIVAuVe1Q6uw0k4_D6bnscHmXDR6PwwY-nZCnhzRZltA4/exec';
 
 function openForms(score){
-  const status = score >= 70 ? 'Aprovado' : 'Reprovado';
-  const nome = encodeURIComponent(collabName || 'Não informado');
-  const dept = encodeURIComponent('Engenharia de Obras');
-  const url = SCRIPT_URL + '?nome=' + nome + '&departamento=' + dept + '&nota=' + score + '&status=' + encodeURIComponent(status);
-  const img = new Image();
-  img.src = url;
-  setTimeout(()=>{
-    alert('✅ Conclusão registrada com sucesso! Seu nome aparecerá na planilha em instantes.');
-  }, 1500);
+  window.open('https://forms.gle/pZwchrDjYaRqemnZA', '_blank');
 }
 
 function showResult(){
@@ -403,7 +395,7 @@ function showResult(){
           <div class="result-bar-track"><div class="result-bar-fill" style="width:${pct}%;background:${color}"></div></div>
         </div>
         <div class="result-msg">${msg}</div>
-        ${showForms ? `<div class="final-panel"><h3>🎉 Todos os módulos obrigatórios concluídos!</h3><p>Clique abaixo para registrar sua conclusão. Informe seu nome <b>${collabName||''}</b> e departamento no formulário.</p><button class="btn-forms" onclick="openForms(${pct})">Registrar no painel de conclusão →</button></div>` : ''}
+        ${showForms ? `<div class="final-panel"><h3>🎉 Todos os módulos obrigatórios concluídos!</h3><p>Clique abaixo para registrar sua conclusão no formulário oficial. Você será redirecionado para o Google Forms.</p><button class="btn-forms" onclick="openForms(${pct})">Preencher formulário de conclusão →</button></div>` : ''}
       </div>
     </div>
     <div class="modal-foot">
