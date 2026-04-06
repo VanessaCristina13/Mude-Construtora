@@ -358,26 +358,18 @@ function checkAllComplete(){
   }
 }
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzz5ELWMEXwg5i7dxRIPWGr4C5SmBjghXgqpeQcOflDl8K7SWOVKAt6Z77Hah4nUtcviA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxk1wW6rDW0azCZ_pBCJWkLIVAuVe1Q6uw0k4_D6bnscHmXDR6PwwY-nZCnhzRZltA4/exec';
 
 function openForms(score){
   const status = score >= 70 ? 'Aprovado' : 'Reprovado';
-  const payload = {
-    nome: collabName || 'Não informado',
-    departamento: 'Engenharia de Obras',
-    nota: score,
-    status: status
-  };
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(payload)
-  }).then(()=>{
+  const nome = encodeURIComponent(collabName || 'Não informado');
+  const dept = encodeURIComponent('Engenharia de Obras');
+  const url = SCRIPT_URL + '?nome=' + nome + '&departamento=' + dept + '&nota=' + score + '&status=' + encodeURIComponent(status);
+  const img = new Image();
+  img.src = url;
+  setTimeout(()=>{
     alert('✅ Conclusão registrada com sucesso! Seu nome aparecerá na planilha em instantes.');
-  }).catch(()=>{
-    alert('⚠️ Erro ao registrar. Tente novamente.');
-  });
+  }, 1500);
 }
 
 function showResult(){
