@@ -120,6 +120,9 @@
 
   <div id="completion-area"></div>
 
+  <div style="text-align:right;margin-bottom:8px">
+    <button onclick="resetAll()" style="background:none;border:1px solid #dfe1e6;border-radius:8px;padding:6px 14px;font-size:12px;color:#6b778c;cursor:pointer">↺ Reiniciar avaliação</button>
+  </div>
   <div class="dept-banner">
     <div>
       <h2>Engenharia de Obras</h2>
@@ -144,6 +147,22 @@
 const FORMS_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdh0iF1Ai963VxnjeNzrHZ0LdhIoSFtKMeAmVHOuvbB6HifdQ/viewform';
 
 let collabName = localStorage.getItem('eng_collab_name') || '';
+
+function resetAll(){
+  if(!confirm('Tem certeza que deseja reiniciar? Todo o progresso será apagado.')) return;
+  MODULES.forEach(m=>{ 
+    progress[m.id]=0;
+    try{ localStorage.removeItem('eng_prog_'+m.id); }catch(e){}
+  });
+  collabName='';
+  try{ localStorage.removeItem('eng_collab_name'); }catch(e){}
+  document.getElementById('completion-area').innerHTML='';
+  document.getElementById('name-overlay').classList.add('open');
+  document.getElementById('collab-name').value='';
+  document.getElementById('start-btn').disabled=true;
+  updateBanner();
+  renderGrid();
+}
 
 function startQuiz(){
   const n = document.getElementById('collab-name').value.trim();
